@@ -206,6 +206,19 @@ body.menu-open {
     border-radius: 0 0 25px 25px;
 }
 
+/* Mobile navbar fix */
+@media (max-width: 768px) {
+    .navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0;
+        right: 0;
+        transform: translate3d(0, 0, 0) !important;
+        -webkit-transform: translate3d(0, 0, 0) !important;
+        will-change: auto;
+    }
+}
+
 .nav-wrapper {
     display: flex;
     justify-content: space-between;
@@ -1410,6 +1423,10 @@ body.menu-open {
 
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
+    body {
+        padding-top: 80px;
+    }
+
     .nav-menu {
         position: fixed;
         left: -100%;
@@ -1917,4 +1934,3 @@ body, html {
 input, button, a {
     touch-action: manipulation;
 }
-
