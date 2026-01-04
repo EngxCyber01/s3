@@ -51,19 +51,29 @@ input, textarea {
 }
 
 html {
+    width: 100%;
+    height: 100%;
+
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: geometricPrecision;
     -webkit-text-size-adjust: 100%;
+    /* Prevent horizontal scroll on root */
+    overflow-x: hidden;
 }
 
 body {
+    width: 100%;
+    min-height: 100vh;
+    /* Modern viewport height to avoid mobile URL-bar jumps */
+    min-height: 100dvh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--dark-bg);
     color: var(--text-light);
     line-height: 1.6;
-    overflow-x: hidden;
+    /* Reserve space for fixed navbar */
+    padding-top: 80px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: geometricPrecision;
@@ -71,6 +81,8 @@ body {
     -webkit-backface-visibility: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
     cursor: default !important;
+    /* Prevent horizontal scroll on body */
+    overflow-x: hidden;
 }
 
 /* Block text cursor for all elements except inputs */
@@ -92,7 +104,7 @@ body input, body textarea {
 
 /* Prevent scrolling when mobile menu is open */
 body.menu-open {
-    overflow: hidden;
+    
     position: fixed;
     width: 100%;
 }
@@ -176,16 +188,6 @@ body.menu-open {
 .cursor-dot.click {
     display: none;
 }
-
-
-
-
-
-
-
-
-
-
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -194,8 +196,10 @@ body.menu-open {
 
 /* ==================== NAVIGATION ==================== */
 .navbar {
-    position: sticky;
+    position: fixed; /* always visible on scroll */
     top: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(10px);
@@ -209,7 +213,7 @@ body.menu-open {
 /* Mobile navbar fix */
 @media (max-width: 768px) {
     .navbar {
-        position: sticky !important;
+        position: fixed !important; /* keep fixed on mobile too */
         top: 0 !important;
         left: 0;
         right: 0;
@@ -317,12 +321,15 @@ body.menu-open {
 /* ==================== HERO SECTION ==================== */
 .hero {
     min-height: 100vh;
+    /* use dynamic viewport height where supported */
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 120px 20px 60px;
     background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(255, 0, 110, 0.05));
     position: relative;
+    /* ensure backgrounds / 3D effects don't cause scrollbars */
     overflow: hidden;
 }
 
@@ -441,10 +448,14 @@ body.menu-open {
     max-width: 600px;
 }
 
+/* 3D / animation container scales with viewport */
 .tech-sphere-container {
     position: relative;
-    width: 400px;
-    height: 400px;
+    /* never bigger than 400px, but also capped by viewport width */
+    width: min(80vw, 400px);
+    /* keep a square aspect */
+    height: auto;
+    aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -453,6 +464,7 @@ body.menu-open {
     cursor: grab;
     transition: transform 0.1s ease-out;
     margin-bottom: 20px;
+    max-width: 100%;
 }
 
 .tech-sphere-container:active {
@@ -881,7 +893,6 @@ body.menu-open {
     text-align: center;
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
 }
 
 .service-card::before {
@@ -1023,7 +1034,7 @@ body.menu-open {
     margin-bottom: 1.5rem;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.15);
     position: relative;
-    overflow: hidden;
+    
     border: 2px solid var(--primary-color);
     padding: 0;
     background-clip: border-box;
@@ -1148,7 +1159,7 @@ body.menu-open {
     padding: 2.5rem 2rem;
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    
 }
 
 .contact-card::before {
@@ -1424,6 +1435,7 @@ body.menu-open {
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
     body {
+        /* keep padding in sync with fixed navbar height on mobile */
         padding-top: 80px;
     }
 
@@ -1469,6 +1481,11 @@ body.menu-open {
     .hero .container {
         grid-template-columns: 1fr;
         gap: 2rem;
+    }
+
+    /* slightly reduce 3D size on tablets / small phones */
+    .tech-sphere-container {
+        width: 70vw;
     }
 
     .hero-title {
@@ -1926,12 +1943,10 @@ button, a, span, p {
 /* Force GPU acceleration */
 body, html {
     will-change: auto;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    /* Removed translateZ(0) to avoid breaking fixed/sticky positioning on some browsers */
 }
 
 /* Prevent double tap zoom on mobile */
 input, button, a {
     touch-action: manipulation;
 }
-
